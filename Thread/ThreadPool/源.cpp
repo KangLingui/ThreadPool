@@ -16,10 +16,10 @@ public:
 	
 	}
 public:
-		void RunItask()
-		{
-			cout<<m_a<<"*"<<m_b<<"="<<m_a*m_b<<endl;
-		}
+	void RunItask()
+	{
+		cout<<m_a<<"*"<<m_b<<"="<<m_a*m_b<<endl;
+	}
 private:
 	int m_a;
 	int m_b;
@@ -29,7 +29,6 @@ private:
 
 int main()
 {
-
 	MyThreadPool tp;
 	tp.CreateThreadPool(1,100);
 	for(int i = 0;i<1000;i++)
@@ -37,11 +36,7 @@ int main()
 		Itask *p = new AddItask(i,i+1);
 		tp.Push(p);
 	}
-
-
-
-
-	system("pause");
+system("pause");
 return 0;
 
 }

@@ -3,36 +3,35 @@
 #include<Windows.h>
 #include<queue>
 #include<process.h>
+
 class  Itask
 {
 
 public:
-
 	virtual void RunItask() = 0;
-
-
 };
 
 class MyThreadPool
 {
+
 public:
 	MyThreadPool(void);
 	~MyThreadPool(void);
 
 public:
-		bool CreateThreadPool(long  lMinThreadNum,long lMaxThreadNum );
-		static unsigned _stdcall ThreadProc(void *);  
-		void DestroyThreadPool();  //Ïú»ÙÏß³Ìº¯Êı
-		bool Push(Itask *);//Í¶µİÈÎÎñº¯Êı
+	bool CreateThreadPool(long  lMinThreadNum,long lMaxThreadNum );
+	static unsigned _stdcall ThreadProc(void *);  
+	void DestroyThreadPool();  //é”€æ¯çº¿ç¨‹å‡½æ•°
+	bool Push(Itask *);//æŠ•é€’ä»»åŠ¡å‡½æ•°
 
 private:
-	std::list<HANDLE> m_lstThread;  //Ïß³ÌÁ´±í
-	std::queue<Itask *> m_qItask;//ÈÎÎñ¶ÓÁĞ
-	HANDLE m_hSemaphore;//ĞÅºÅÁ¿
+	std::list<HANDLE> m_lstThread;  //çº¿ç¨‹é“¾è¡¨
+	std::queue<Itask *> m_qItask;//ä»»åŠ¡é˜Ÿåˆ—
+	HANDLE m_hSemaphore;//ä¿¡å·é‡
 	bool m_bFlagQuit;
-	long m_CreateThread;//´´½¨µÄÏß³ÌÊı
-	long m_MaxThread;//´´½¨×î´óÏß³Ì
-	long m_RunThread;//ÔËĞĞµÄÏß³Ì
+	long m_CreateThread;//åˆ›å»ºçš„çº¿ç¨‹æ•°
+	long m_MaxThread;//åˆ›å»ºæœ€å¤§çº¿ç¨‹
+	long m_RunThread;//è¿è¡Œçš„çº¿ç¨‹
 	HANDLE m_hMutex;
 };
 

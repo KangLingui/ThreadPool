@@ -1,8 +1,8 @@
 #include "MyThreadPool.h"
-//ÏîÄ¿ÃèÊö£ºÃ¿À´Ò»¸öÈÎÎñ£¬ÊÍ·ÅÒ»¸öĞÅºÅÁ¿£¬È»ºó»½ĞÑÏß³Ì³ØÖĞµÄÏß³ÌÈ¥Ö´ĞĞÈÎÎñ£¬
-//ÎªÁË°´ÕÕË³ĞòµÄÖ´ĞĞÈÎÎñ£¬½«ÈÎÎñ·Åµ½¶ÓÁĞÖĞ£¬µ±¶à¸öÏß³ÌÈ¥¶ÓÁĞÖĞÈ¡ÈÎÎñÊ±»á²úÉúÏß³Ì²¢·¢ÎÊÌâ£¨½â¾ö°ì·¨--¼ÓËø£¨»¥³âÁ¿£©£©
-//Í¬Ê±¶ÓÁĞµÄpushºÍpop²»ÄÜÍ¬Ê±Ö´ĞĞ-----£¨½â¾ö°ì·¨--¼ÓËø£¨»¥³âÁ¿£©£©
-//±ÜÃâËÀËø£¨¶à¸öÏß³ÌÇÀÒ»¸öÈÎÎñÊ±»á·¢Éú½©³ÖÏÖÏó£©
+//é¡¹ç›®æè¿°ï¼šæ¯æ¥ä¸€ä¸ªä»»åŠ¡ï¼Œé‡Šæ”¾ä¸€ä¸ªä¿¡å·é‡ï¼Œç„¶åå”¤é†’çº¿ç¨‹æ± ä¸­çš„çº¿ç¨‹å»æ‰§è¡Œä»»åŠ¡ï¼Œ
+//ä¸ºäº†æŒ‰ç…§é¡ºåºçš„æ‰§è¡Œä»»åŠ¡ï¼Œå°†ä»»åŠ¡æ”¾åˆ°é˜Ÿåˆ—ä¸­ï¼Œå½“å¤šä¸ªçº¿ç¨‹å»é˜Ÿåˆ—ä¸­å–ä»»åŠ¡æ—¶ä¼šäº§ç”Ÿçº¿ç¨‹å¹¶å‘é—®é¢˜ï¼ˆè§£å†³åŠæ³•--åŠ é”ï¼ˆäº’æ–¥é‡ï¼‰ï¼‰
+//åŒæ—¶é˜Ÿåˆ—çš„pushå’Œpopä¸èƒ½åŒæ—¶æ‰§è¡Œ-----ï¼ˆè§£å†³åŠæ³•--åŠ é”ï¼ˆäº’æ–¥é‡ï¼‰ï¼‰
+//é¿å…æ­»é”ï¼ˆå¤šä¸ªçº¿ç¨‹æŠ¢ä¸€ä¸ªä»»åŠ¡æ—¶ä¼šå‘ç”ŸåƒµæŒç°è±¡ï¼‰
 
 
 MyThreadPool::MyThreadPool(void)
@@ -10,10 +10,10 @@ MyThreadPool::MyThreadPool(void)
 
 	m_bFlagQuit = true;
 	m_hSemaphore =NULL;
-	m_CreateThread =0;//´´½¨µÄÈËÊı
-	m_MaxThread = 0;//´´½¨×î´óÏß³Ì
-	m_RunThread =0;//ÔËĞĞµÄÏß³Ì
-	m_hMutex = CreateMutex(NULL,false,0);//´´½¨»¥³âÁ¿
+	m_CreateThread =0;//åˆ›å»ºçš„äººæ•°
+	m_MaxThread = 0;//åˆ›å»ºæœ€å¤§çº¿ç¨‹
+	m_RunThread =0;//è¿è¡Œçš„çº¿ç¨‹
+	m_hMutex = CreateMutex(NULL,false,0);//åˆ›å»ºäº’æ–¥é‡
 
 }
 
@@ -25,28 +25,27 @@ MyThreadPool::~MyThreadPool(void)
 
 bool MyThreadPool::CreateThreadPool(long  lMinThreadNum,long lMaxThreadNum )
 {
-	//Ğ£Ñé²ÎÊı
+	//æ ¡éªŒå‚æ•°
 	if(lMinThreadNum<=0  ||  lMaxThreadNum<lMinThreadNum)
 	{
 		return false;
 	}
-	//´´½¨ĞÅºÅÁ¿
+	//åˆ›å»ºä¿¡å·é‡
 	m_hSemaphore =  CreateSemaphore(0,0,lMaxThreadNum,0);
 
-	//´´½¨Ïß³Ì
+	//åˆ›å»ºçº¿ç¨‹
 	for(long i = 0;i<lMinThreadNum;i++)
 	{
 		HANDLE hThread =(HANDLE)_beginthreadex(0,0,&ThreadProc,this,0,0);
 		if(hThread)
 		{
-			m_lstThread.push_back(hThread);//Èç¹ûÏß³Ì´´½¨³É¹¦£¬½«Ïß³Ì¼ÓÈëµ½Á´±íÖĞ
-			m_CreateThread++;
+		m_lstThread.push_back(hThread);//å¦‚æœçº¿ç¨‹åˆ›å»ºæˆåŠŸï¼Œå°†çº¿ç¨‹åŠ å…¥åˆ°é“¾è¡¨ä¸­
+		m_CreateThread++;
 		}
 	}
 	m_CreateThread = lMinThreadNum;
 	m_MaxThread = lMaxThreadNum;
-
-
+	
 	return TRUE;
 
 }
@@ -54,48 +53,39 @@ unsigned _stdcall MyThreadPool::ThreadProc(void *lpvoid)
 {
 	MyThreadPool *pthis =  (MyThreadPool*)lpvoid;
 	Itask *pItask = NULL;
-
 	while (pthis->m_bFlagQuit)
 	{
-		//µÈĞÅºÅ
+		//ç­‰ä¿¡å·
 		WaitForSingleObject(pthis->m_hSemaphore,INFINITE);
-
-		InterlockedIncrement(&pthis->m_RunThread);//Ô­×Ó·ÃÎÊ//pthis->m_RunThread++;
-		//´Ó¶ÓÁĞÖĞÈ¡³öÈÎÎñ
+		InterlockedIncrement(&pthis->m_RunThread);//åŸå­è®¿é—®pthis->m_RunThread++;
+		//ä»é˜Ÿåˆ—ä¸­å–å‡ºä»»åŠ¡
 		while(!pthis->m_qItask.empty())
 		{
-			//¶à¸öÏß³Ì»áÍ¬Ê±È¥È¡Ò»¸öÈÎÎñ--------½â¾ö--ÉÏËø
-
-			WaitForSingleObject(pthis->m_hMutex,INFINITE);//»á²úÉú×èÈû
+			//å¤šä¸ªçº¿ç¨‹ä¼šåŒæ—¶å»å–ä¸€ä¸ªä»»åŠ¡--------è§£å†³--ä¸Šé”
+			WaitForSingleObject(pthis->m_hMutex,INFINITE);//ä¼šäº§ç”Ÿé˜»å¡
 			if(pthis->m_qItask.empty())
 			{
 				ReleaseMutex(pthis->m_hMutex);
 				break;
 			}
-			pItask = pthis->m_qItask.front(); //È¡³öÈÎÎñ
-			pthis->m_qItask.pop(); //¶ÓÁĞ²»ÄÜÍ¬Ê±½øĞĞpushºÍpop,Òò´ËpushºÍpop±ØĞë¼ÓÍ¬Ò»°ÑËø
+			pItask = pthis->m_qItask.front(); //å–å‡ºä»»åŠ¡
+			pthis->m_qItask.pop(); //é˜Ÿåˆ—ä¸èƒ½åŒæ—¶è¿›è¡Œpushå’Œpop,å› æ­¤pushå’Œpopå¿…é¡»åŠ åŒä¸€æŠŠé”
 			ReleaseMutex(pthis->m_hMutex);
-
-			pItask->RunItask();//Ïß³ÌÖ´ĞĞÈÎÎñ   ²»ÄÜ¸øËû¼ÓËø----¼ÓËø¾ÍÊÇÒ»¸öÈËÒ»¸öÈË¸É»î
-
-			//Ö´ĞĞÍêÈÎÎñºó½«ÈÎÎñÉ¾µô
+			pItask->RunItask();//çº¿ç¨‹æ‰§è¡Œä»»åŠ¡   ä¸èƒ½ç»™ä»–åŠ é”----åŠ é”å°±æ˜¯ä¸€ä¸ªäººä¸€ä¸ªäººå¹²æ´»
+			//æ‰§è¡Œå®Œä»»åŠ¡åå°†ä»»åŠ¡åˆ æ‰
 			delete  pItask;
-			pItask = NULL;
-
-
+			pItask = NULLï¼›
 		}
-
-		InterlockedDecrement(&pthis->m_RunThread);//Ô­×Ó·ÃÎÊ//pthis->m_RunThread--;
+		InterlockedDecrement(&pthis->m_RunThread);//åŸå­è®¿é—®//pthis->m_RunThread--;
 	}
 	return 0;
-
 }
-void MyThreadPool::DestroyThreadPool()  //Ïú»ÙÏß³Ìº¯Êı
+
+void MyThreadPool::DestroyThreadPool()  //é”€æ¯çº¿ç¨‹å‡½æ•°
 {
 	m_bFlagQuit = false;
 	auto ite = m_lstThread.begin();
 	Itask *pItask = NULL;
-
 	while (!m_qItask.empty())
 	{
 		pItask = m_qItask.front();
@@ -103,8 +93,6 @@ void MyThreadPool::DestroyThreadPool()  //Ïú»ÙÏß³Ìº¯Êı
 		delete pItask;
 		pItask = NULL;
 	}
-
-
 	while (ite!=m_lstThread.end())
 	{
 		if(  WAIT_TIMEOUT==WaitForSingleObject(*ite,100))
@@ -114,9 +102,6 @@ void MyThreadPool::DestroyThreadPool()  //Ïú»ÙÏß³Ìº¯Êı
 		CloseHandle(*ite);
 		*ite = NULL;
 		*ite++;
-
-
-
 	}
 	m_lstThread.clear();
 	if(m_hSemaphore)
@@ -131,32 +116,27 @@ void MyThreadPool::DestroyThreadPool()  //Ïú»ÙÏß³Ìº¯Êı
 
 	}
 }
+
 bool MyThreadPool::Push(Itask *pItask)
 {
-	//¼ìÑé²ÎÊı
+	//æ£€éªŒå‚æ•°
 	if(!pItask)
 		return  false;
-	//½«ÈÎÎñ¼ÓÈë¶ÓÁĞ
+	//å°†ä»»åŠ¡åŠ å…¥é˜Ÿåˆ—
 	WaitForSingleObject(m_hMutex,INFINITE);
-	m_qItask.push(pItask);    //¶ÓÁĞ²»ÄÜÍ¬Ê±½øĞĞpushºÍpop,Òò´ËpushºÍpop±ØĞë¼ÓÍ¬Ò»°ÑËø
+	m_qItask.push(pItask);    //é˜Ÿåˆ—ä¸èƒ½åŒæ—¶è¿›è¡Œpushå’Œpop,å› æ­¤pushå’Œpopå¿…é¡»åŠ åŒä¸€æŠŠé”
 	ReleaseMutex(m_hMutex);
 
-	//1ÓĞ¿Õ·şÎñÔ±
+	//1æœ‰ç©ºæœåŠ¡å‘˜
 	if(m_RunThread==m_CreateThread && m_CreateThread<m_MaxThread)
 	{
 		HANDLE hThread =(HANDLE)_beginthreadex(0,0,&ThreadProc,this,0,0);
 		if(hThread)
-			m_lstThread.push_back(hThread);//Èç¹ûÏß³Ì´´½¨³É¹¦£¬½«Ïß³Ì¼ÓÈëµ½Á´±íÖĞ
-
-
+			m_lstThread.push_back(hThread);//å¦‚æœçº¿ç¨‹åˆ›å»ºæˆåŠŸï¼Œå°†çº¿ç¨‹åŠ å…¥åˆ°é“¾è¡¨ä¸­
 		m_CreateThread++;
 	}
-
-
-	//ÊÍ·ÅĞÅºÅÁ¿
+	//é‡Šæ”¾ä¿¡å·é‡
 	ReleaseSemaphore(m_hSemaphore,1,NULL);
-
-
 	return true;
 
 }
